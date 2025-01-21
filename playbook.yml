@@ -1,0 +1,7 @@
+---
+- name: "'Deploy' saying hello locally"
+  hosts: localhost
+  tasks:
+    - name: "Say hello"
+      debug:
+        msg: "Hello world!"
