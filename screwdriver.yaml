@@ -1,0 +1,14 @@
+shared:
+  image: node:lts
+jobs:
+  main:
+    requires: [~pr, ~commit]
+    steps:
+        - install: npm install screwdriver-template-main
+        - validate: ./node_modules/.bin/template-validate
+  publish:
+    requires: [main]
+    steps:
+        - install: npm install screwdriver-template-main
+        - publish: ./node_modules/.bin/template-publish
+        - autotag: ./node_modules/.bin/template-tag --name adamExampleNamespace/flake8_lint --tag latest
