@@ -5,7 +5,7 @@ shared:
   annotations:
     screwdriver.cd/timeout: 5
 jobs:
-  generate:
+  test:
     requires: [ ~pr, ~commit ]
     environment:
       FOO: baz
@@ -17,11 +17,26 @@ jobs:
       - display-env: echo "FOO = $FOO, FIZZ = $FIZZ"
       - init: pip install -r requirements.txt
       - lint: flake8 --benchmark main.py
+  gen-token-1:
+    requires: [ test ]
+    steps:
       - generate-token: python main.py | tee token.txt
-      - store-token-metadata: meta set token "$(cat token.txt)"
+      - store-token-metadata: meta set token1 "$(cat token.txt)"
+      - save-token-artifact: mv token.txt $SD_ARTIFACTS_DIR
+  gen-token-2:
+    requires: [ test ]
+    steps:
+      - generate-token: python main.py | tee token.txt
+      - store-token-metadata: meta set token2 "$(cat token.txt)"
+      - save-token-artifact: mv token.txt $SD_ARTIFACTS_DIR
+  gen-token-3:
+    requires: [ test ]
+    steps:
+      - generate-token: python main.py | tee token.txt
+      - store-token-metadata: meta set token3 "$(cat token.txt)"
       - save-token-artifact: mv token.txt $SD_ARTIFACTS_DIR
   display:
-    requires: [ generate ]
+    requires: [ gen-token-1, gen-token-2, gen-token-3 ]
     steps:
       - display-env: echo "FOO = $FOO, FIZZ = $FIZZ"
       - show-token: meta get token
