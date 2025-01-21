@@ -46,4 +46,7 @@ jobs:
     requires: [ morph-token-1, gen-token-2, gen-token-3 ]
     steps:
       - display-env: echo "FOO = $FOO, FIZZ = $FIZZ"
-      - show-tokens: meta get token1; meta get token2; meta get token3
+      - show-tokens: |
+          echo $(meta get token1)
+          echo $(meta get token2)
+          echo $(meta get token3)
